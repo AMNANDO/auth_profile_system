@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 
 class Account(models.Model):
     user=models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    id = models.AutoField(primary_key=True)
     name=models.CharField(max_length=100)
     age=models.PositiveIntegerField()
     bio=models.TextField(blank=True)
