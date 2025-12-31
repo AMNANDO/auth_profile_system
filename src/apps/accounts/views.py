@@ -14,7 +14,7 @@ from rest_framework.response import Response
 class AccountsViewSet(ModelViewSet):
     queryset = Account.objects.all()
     serializer_class = AccountSerializer
-
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return self.queryset.filter(user=self.request.user)
@@ -22,7 +22,7 @@ class AccountsViewSet(ModelViewSet):
     def get_permissions(self):
         if self.action in ['retrieve', 'update', 'destroy', 'partial_update']:
             return [IsOwnerOrReadOnly()]
-        return super().get_permissions()
+        return [IsAuthenticated()]
     def retrieve(self, request, *args, **kwargs):
         account = self.get_object()
         if not account.is_active:
