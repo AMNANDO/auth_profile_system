@@ -8,6 +8,7 @@ class Account(models.Model):
     age=models.PositiveIntegerField()
     bio=models.TextField(blank=True)
     email=models.EmailField(unique=True)
+    is_active=models.BooleanField(default=True)
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
 
