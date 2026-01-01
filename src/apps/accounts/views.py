@@ -7,6 +7,7 @@ from rest_framework import status
 from rest_framework.decorators import action
 from .models import Account
 from .serializers import AccountSerializer
+from .exceptions import *
 from .permissions import IsOwnerOrReadOnly
 from rest_framework.response import Response
 # Create your views here.
@@ -22,21 +23,17 @@ class AccountsViewSet(ModelViewSet):
         if self.action in ['retrieve', 'update', 'destroy', 'partial_update']:
             return [IsAuthenticated(), IsOwnerOrReadOnly()]
         return [IsAuthenticated()]
+
     def retrieve(self, request, *args, **kwargs):
         account = self.get_object()
         if not account.is_active:
-            return Response({
-                'success': False,
-                'error':{
-                    'code': 'inactive_account',
-                    'message': 'This account is inactive and cannot be retrieved.'
-                }
-            }, status=status.HTTP_403_FORBIDDEN)
+            raise InactiveAccountException()
         serializer = self.get_serializer(account)
         return Response({
             'success': True,
             'data': serializer.data
         }, status=status.HTTP_200_OK)
+
     @action(detail=True, methods=['post'])
     def deactivate(self, request, pk=None):
         account = self.get_object()
@@ -47,24 +44,13 @@ class AccountsViewSet(ModelViewSet):
                 'success': True,
                 'message': 'Account has been deactivated.'
             }, status=status.HTTP_200_OK)
-        return Response({
-            'success': False,
-            'error': {
-                'code': 'already_inactive',
-                'message': 'This account is already inactive.'
-            }
-        }, status=status.HTTP_400_BAD_REQUEST)
+        raise AlreadyInactiveAccountException()
+
     @action(detail=True, methods=['post'])
     def activate(self, request, pk=None):
         account = self.get_object()
         if account.is_active:
-            return Response({
-                'success': False,
-                'error': {
-                    'code': 'already_active',
-                    'message': 'This account is already active.'
-                }
-            }, status=status.HTTP_400_BAD_REQUEST)
+            raise AlreadyActiveAccountException()
         account.is_active = True
         account.save()
         return Response({

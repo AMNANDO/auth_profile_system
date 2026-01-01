@@ -133,7 +133,8 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_FILTER_BACKENDS": [
         "django_filters.rest_framework.DjangoFilterBackend",
-    ]
+    ],
+    "DEFAULT_EXCEPTION_HANDLER": "apps.accounts.exceptions.custom_exception_handler",
 }
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=20),
