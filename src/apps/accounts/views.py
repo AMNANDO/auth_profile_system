@@ -13,12 +13,14 @@ from .exceptions import (AlreadyInactiveAccountException,
 from .permissions import (IsOwner,
                           IsAdmin,
                           IsAccountActive)
+from .pagination import AccountPagination
 from rest_framework.response import Response
 # Create your views here.
 
 class AccountsViewSet(ModelViewSet):
     serializer_class = AccountSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = AccountPagination
 
     def get_queryset(self):
         return Account.objects.filter(user=self.request.user)
