@@ -5,6 +5,8 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from rest_framework.decorators import action
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import OrderingFilter, SearchFilter
 from .models import Account
 from .serializers import AccountSerializer
 from .exceptions import (AlreadyInactiveAccountException,
@@ -21,6 +23,13 @@ class AccountsViewSet(ModelViewSet):
     serializer_class = AccountSerializer
     permission_classes = [IsAuthenticated]
     pagination_class = AccountPagination
+    filter_backends = (DjangoFilterBackend,
+                       OrderingFilter,
+                       SearchFilter)
+    filterset_fields = ['is_active', 'age', 'email', 'user']
+    ordering_fields = ['age', 'name', 'created_at']
+    search_fields = ['name', 'email', 'bio']
+    ordering = ('-created_at',)
 
     def get_queryset(self):
         return Account.objects.filter(user=self.request.user)
