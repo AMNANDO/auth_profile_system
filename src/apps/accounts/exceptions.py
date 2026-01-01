@@ -23,7 +23,7 @@ def custom_exception_handler(exc, context):
         customized_response = {
             'success': False,
             'error': {
-                'code': response.status_code,
+                'code': getattr(exc, 'default_code', 'error'),
                 'details': response.data,
             }
         }

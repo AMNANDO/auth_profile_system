@@ -7,7 +7,9 @@ from rest_framework import status
 from rest_framework.decorators import action
 from .models import Account
 from .serializers import AccountSerializer
-from .exceptions import *
+from .exceptions import (AlreadyInactiveAccountException,
+                         AlreadyActiveAccountException,
+                         InactiveAccountException)
 from .permissions import IsOwnerOrReadOnly
 from rest_framework.response import Response
 # Create your views here.
@@ -21,8 +23,11 @@ class AccountsViewSet(ModelViewSet):
 
     def get_permissions(self):
         if self.action in ['retrieve', 'update', 'destroy', 'partial_update']:
-            return [IsAuthenticated(), IsOwnerOrReadOnly()]
-        return [IsAuthenticated()]
+            permissions =[IsAuthenticated, IsOwnerOrReadOnly]
+        else:
+            permissions = [IsAuthenticated]
+        return [permission() for permission in permissions]
+
 
     def retrieve(self, request, *args, **kwargs):
         account = self.get_object()
