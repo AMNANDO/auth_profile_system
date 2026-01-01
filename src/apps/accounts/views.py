@@ -10,7 +10,9 @@ from .serializers import AccountSerializer
 from .exceptions import (AlreadyInactiveAccountException,
                          AlreadyActiveAccountException,
                          InactiveAccountException)
-from .permissions import IsOwnerOrReadOnly
+from .permissions import (IsOwner,
+                          IsAdmin,
+                          IsAccountActive)
 from rest_framework.response import Response
 # Create your views here.
 
@@ -22,9 +24,13 @@ class AccountsViewSet(ModelViewSet):
         return Account.objects.filter(user=self.request.user)
 
     def get_permissions(self):
-        if self.action in ['retrieve', 'update', 'destroy', 'partial_update']:
-            permissions =[IsAuthenticated, IsOwnerOrReadOnly]
-        else:
+        if self.action == 'retrieve':
+            permissions = [IsAuthenticated, IsOwner, IsAccountActive]
+        elif self.action in ['update', 'partial_update', 'destroy']:
+            permissions = [IsAuthenticated, IsOwner, IsAccountActive]
+        elif self.action in ['deactivate', 'activate']:
+            permissions = [IsAuthenticated, IsAdmin, IsOwner]
+        else :
             permissions = [IsAuthenticated]
         return [permission() for permission in permissions]
 
