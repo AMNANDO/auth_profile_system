@@ -12,16 +12,15 @@ from rest_framework.response import Response
 # Create your views here.
 
 class AccountsViewSet(ModelViewSet):
-    queryset = Account.objects.all()
     serializer_class = AccountSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return self.queryset.filter(user=self.request.user)
+        return Account.objects.filter(user=self.request.user)
 
     def get_permissions(self):
         if self.action in ['retrieve', 'update', 'destroy', 'partial_update']:
-            return [IsOwnerOrReadOnly()]
+            return [IsAuthenticated(), IsOwnerOrReadOnly()]
         return [IsAuthenticated()]
     def retrieve(self, request, *args, **kwargs):
         account = self.get_object()
