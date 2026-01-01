@@ -33,13 +33,13 @@ class AccountsViewSet(ModelViewSet):
     ordering = ('-created_at',)
 
     def get_queryset(self):
-        return Account.objects.filter(user=self.request.user)
+        return Account.objects.select_related('user').all()
 
     def get_permissions(self):
         if self.action == 'retrieve':
-            permissions = [IsAuthenticated, IsOwner, IsAccountActive]
+            permissions = [IsAuthenticated, IsAccountActive, IsOwner]
         elif self.action in ['update', 'partial_update', 'destroy']:
-            permissions = [IsAuthenticated, IsOwner, IsAccountActive]
+            permissions = [IsAuthenticated, IsAccountActive, IsOwner]
         elif self.action in ['deactivate', 'activate']:
             permissions = [IsAuthenticated, IsAdmin, IsOwner]
         else :
