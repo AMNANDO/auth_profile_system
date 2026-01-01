@@ -137,6 +137,21 @@ REST_FRAMEWORK = {
     "DEFAULT_EXCEPTION_HANDLER": "apps.accounts.exceptions.custom_exception_handler",
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.UserRateThrottle',
+        'rest_framework.throttling.AnonRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'user': '100/hour',
+        'anon': '10/hour',
+        'change_account_status': '5/hour',
+    },
+}
+CASHES = {
+    'default': {
+        'BACKEND' : 'django_redis.cache.RedisCache',
+        'LOCATION' : 'redis://127.0.0.1:6379/1',
+        }
 }
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=20),

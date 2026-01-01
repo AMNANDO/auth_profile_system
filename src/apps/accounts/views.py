@@ -9,6 +9,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
 from .models import Account
 from .serializers import AccountSerializer
+from .throttles import ChangeAccountStatusThrottle
 from .exceptions import (AlreadyInactiveAccountException,
                          AlreadyActiveAccountException,
                          InactiveAccountException)
@@ -56,7 +57,7 @@ class AccountsViewSet(ModelViewSet):
             'data': serializer.data
         }, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=['post'], throttle_classes=[ChangeAccountStatusThrottle])
     def deactivate(self, request, pk=None):
         account = self.get_object()
         if account.is_active:
@@ -68,7 +69,7 @@ class AccountsViewSet(ModelViewSet):
             }, status=status.HTTP_200_OK)
         raise AlreadyInactiveAccountException()
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=['post'], throttle_classes=[ChangeAccountStatusThrottle])
     def activate(self, request, pk=None):
         account = self.get_object()
         if account.is_active:
