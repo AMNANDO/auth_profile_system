@@ -1,6 +1,7 @@
 from rest_framework import status
 from .base import BaseAccountTest
 from django.test import override_settings
+from django.core.cache import cache
 
 @override_settings(
     CACHES={
@@ -12,6 +13,7 @@ from django.test import override_settings
 )
 
 class ThrottleTests(BaseAccountTest):
+
     def test_throttle_on_change_status(self):
         self.authenticate(user=self.user)
         for i in range(5):
@@ -30,11 +32,17 @@ class ThrottleTests(BaseAccountTest):
         self.authenticate(user=self.user)
         for i in range(200):
             self.client.get('/accounts/')
-        response = self.client.get('/accounts/')
-        print('out of loop request =>', response.status_code, response.data)
-            # print(f'Authenticated user throttle test attempt {i+1} \n', response.status_code)
+            response = self.client.get('/accounts/')
+            print('out of loop request =>', response.status_code, response.data)
+            print(f'Authenticated user throttle test attempt {i+1} \n', response.status_code)
 
-            # self.assertIn(response.status_code, [status.HTTP_200_OK, status.HTTP_429_TOO_MANY_REQUESTS])
-        #     if response.status_code == status.HTTP_429_TOO_MANY_REQUESTS:
-        #         break
-        # self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
+            self.assertIn(response.status_code, [status.HTTP_200_OK, status.HTTP_429_TOO_MANY_REQUESTS])
+            if response.status_code == status.HTTP_429_TOO_MANY_REQUESTS:
+                break
+            self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
+
+    def test_unauthenticated_user_throttle(self):
+        for i in range (205):
+            response = self.client.get('/accounts/')
+            if response.status_code == status.HTTP_429_TOO_MANY_REQUESTS:
+                print('unauthenticated user throttle \n', i)
