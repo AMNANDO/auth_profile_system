@@ -49,8 +49,6 @@ class AccountsViewSet(ModelViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         account = self.get_object()
-        if not account.is_active:
-            raise InactiveAccountException()
         serializer = self.get_serializer(account)
         return Response({
             'success': True,
