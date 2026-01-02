@@ -7,6 +7,8 @@ class BaseAccountTest(APITestCase):
     def setUpTestData(cls):
         # Create a test user
         cls.user = User.objects.create_user(username='whoami', password='adminnistam')
+        # Create another user for tests
+        cls.another_user = User.objects.create_user(username='anotheruser', password='anotherpass')
         # Create admin user
         cls.admin = User.objects.create_superuser(username='admin', password='adminadmin')
         # Create a test account linked to the user
