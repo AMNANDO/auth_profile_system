@@ -7,8 +7,8 @@ class IsAccountActive(BasePermission):
 class IsOwner(BasePermission):
     message = 'you don`t own this account.'
     def has_object_permission(self, request, view, obj):
-        if not obj.is_active:
-            return False
+        # if not obj.is_active:
+        #     return False
         return obj.user == request.user
 
 class IsAdmin(BasePermission):

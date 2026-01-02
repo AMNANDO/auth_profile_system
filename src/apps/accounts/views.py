@@ -41,7 +41,7 @@ class AccountsViewSet(ModelViewSet):
         elif self.action in ['update', 'partial_update', 'destroy']:
             permissions = [IsAuthenticated, IsAccountActive, IsOwner]
         elif self.action in ['deactivate', 'activate']:
-            permissions = [IsAuthenticated, IsAdmin, IsOwner]
+            permissions = [IsAuthenticated, IsOwner]
         else :
             permissions = [IsAuthenticated]
         return [permission() for permission in permissions]
