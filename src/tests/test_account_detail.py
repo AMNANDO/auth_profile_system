@@ -15,3 +15,12 @@ class AccountRetrieveTest(BaseAccountTest):
         print('test another user retrieve account \n', response.status_code, '\n', response.data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         # self.assertFalse(response.data['success'])
+
+    def test_cannot_retrieve_inactive_account(self):
+        self.active_account.is_active = False
+        self.active_account.save()
+        self.authenticate(user=self.user)
+        response = self.client.get(f'/accounts/{self.active_account.id}/')
+        print('test retrieve inactive account \n', response.status_code, '\n', response.data)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        # self.assertFalse(response.data['success'])
