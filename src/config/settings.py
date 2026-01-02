@@ -140,10 +140,15 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_CLASSES': [
         'rest_framework.throttling.UserRateThrottle',
         'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.ScopedRateThrottle',
     ],
     'DEFAULT_THROTTLE_RATES': {
-        'user': '100/hour',
-        'anon': '10/hour',
+        # simple/user/anon
+        'user': '1000/hour',
+        'anon': '100/hour',
+        # custom scopes
+        'hourly_user': '200/hour',
+        'hourly_anon': '20/hour',
         'change_account_status': '5/hour',
     },
 }
