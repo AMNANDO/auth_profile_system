@@ -56,45 +56,44 @@ python manage.py createsuperuser
 
 python manage.py runserver
 ```
-API Endpoints
+## API Endpoints
 
-Accounts
+### Accounts
 
-GET /accounts/ – List accounts (supports pagination, search, filter, ordering)
+- **GET /accounts/** – List accounts (supports pagination, search, filter, ordering)
+- **GET /accounts/{id}/** – Retrieve account details
+- **POST /accounts/** – Create a new account
+- **PUT/PATCH /accounts/{id}/** – Update account
+- **POST /accounts/{id}/deactivate/** – Deactivate an account
+- **POST /accounts/{id}/activate/** – Activate an account
 
-GET /accounts/{id}/ – Retrieve account details
+---
 
-POST /accounts/ – Create a new account
+## Permissions
 
-PUT/PATCH /accounts/{id}/ – Update account
+- Only account owners or admins can update, delete, activate, or deactivate accounts.
+- Authenticated users can list accounts.
+- Inactive accounts cannot be retrieved or updated.
 
-POST /accounts/{id}/deactivate/ – Deactivate an account
+---
 
-POST /accounts/{id}/activate/ – Activate an account
+## Throttling
 
-Permissions
+- Custom throttles for user and anonymous requests.
+- Sensitive actions (activate/deactivate) are rate-limited using `ChangeAccountStatusThrottle`.
 
-Only account owners or admins can update, delete, activate, or deactivate accounts.
+---
 
-Authenticated users can list accounts.
-
-Inactive accounts cannot be retrieved or updated.
-
-Throttling
-
-Custom throttles for user and anonymous requests.
-
-Sensitive actions (activate/deactivate) are rate-limited using ChangeAccountStatusThrottle.
-
-Running Tests
+## Running Tests
 
 Run all tests with:
 
-python manage.py test
+```bash
 
+python manage.py test
 ```
 
-## Documentation
+Documentation
 
 The API documentation is available via Swagger/OpenAPI if drf-spectacular is installed:
 
