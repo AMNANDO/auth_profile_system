@@ -92,15 +92,57 @@ Run all tests with:
 
 python manage.py test
 ```
+---
+## Documentation
 
-Documentation
+The API documentation is available via **Swagger/OpenAPI** if `drf-spectacular` is installed:
 
-The API documentation is available via Swagger/OpenAPI if drf-spectacular is installed:
+- **Swagger UI:** [`/api/schema/swagger-ui/`]( /api/schema/swagger-ui/)
+- **ReDoc:** [`/api/schema/redoc/`]( /api/schema/redoc/)
 
-Swagger UI: /api/schema/swagger-ui/
+---
 
-ReDoc: /api/schema/redoc/
 
-License
+## Project Structure
 
-This project is licensed under the MIT License.
+
+
+auth_profile_system/
+##### │
+##### ├── auth_profile_system/ # Django project folder
+##### │ ├── init.py
+##### │ ├── settings.py # Project settings
+##### │ ├── urls.py # Project URLs
+##### │ ├── wsgi.py
+##### │ └── asgi.py
+##### │
+##### ├── accounts/ # Django app for account management
+##### │ ├── init.py
+##### │ ├── admin.py # Admin registration
+##### │ ├── apps.py
+##### │ ├── models.py # Account model
+##### │ ├── serializers.py # DRF serializers
+##### │ ├── views.py # DRF viewsets
+##### │ ├── permissions.py # Custom permissions
+##### │ ├── exceptions.py # Custom exceptions
+##### │ ├── throttles.py # Custom throttle classes
+##### │ ├── pagination.py # Custom pagination classes
+##### │ ├── tests/ # Test suite
+##### │ │ ├── init.py
+##### │ │ ├── base.py # Base test class
+##### │ │ └── test_accounts.py # Account API tests
+##### │ └── urls.py # App-specific URLs (if any)
+##### │
+##### ├── manage.py # Django CLI
+##### └── requirements.txt # Project dependencies
+
+---
+
+## License
+
+This project is licensed under the **MIT License**.
+
+---
+![Python Version](https://img.shields.io/badge/python-3.11-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
