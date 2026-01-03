@@ -7,6 +7,8 @@ from rest_framework import status
 from rest_framework.decorators import action
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
+from rest_framework.response import Response
+from drf_spectacular.utils import extend_schema, OpenApiResponse
 from .models import Account
 from .serializers import AccountSerializer
 from .throttles import (ChangeAccountStatusThrottle,
@@ -19,7 +21,6 @@ from .permissions import (IsOwner,
                           IsAdmin,
                           IsAccountActive)
 from .pagination import AccountPagination
-from rest_framework.response import Response
 # Create your views here.
 
 class AccountsViewSet(ModelViewSet):
@@ -59,6 +60,20 @@ class AccountsViewSet(ModelViewSet):
             'data': serializer.data
         }, status=status.HTTP_200_OK)
 
+    @extend_schema(
+        description='Deactivate an active account.',
+        responses={
+            200: OpenApiResponse(
+                description='Account successfully deactivated.'
+            ),
+            400: OpenApiResponse(
+                description='Account already inactive'
+            ),
+            429: OpenApiResponse(
+                description='Too many requests'
+            )
+        })
+
     @action(detail=True, methods=['post'], throttle_classes=[ChangeAccountStatusThrottle])
     def deactivate(self, request, pk=None):
         # self.throttle_scope = 'change_account_status'
@@ -71,6 +86,20 @@ class AccountsViewSet(ModelViewSet):
                 'message': 'Account has been deactivated.'
             }, status=status.HTTP_200_OK)
         raise AlreadyInactiveAccountException()
+
+    @extend_schema(
+        description='Activate an inactive account.',
+        responses={
+            200: OpenApiResponse(
+                description='Account successfully activated.'
+            ),
+            400: OpenApiResponse(
+                description='Account already active'
+            ),
+            429: OpenApiResponse(
+                description='Too many requests'
+            )
+        })
 
     @action(detail=True, methods=['post'], throttle_classes=[ChangeAccountStatusThrottle])
     def activate(self, request, pk=None):
