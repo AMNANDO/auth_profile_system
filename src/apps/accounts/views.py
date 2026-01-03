@@ -8,7 +8,7 @@ from rest_framework.decorators import action
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.response import Response
-from drf_spectacular.utils import extend_schema, OpenApiResponse
+from drf_spectacular.utils import extend_schema, OpenApiResponse, extend_schema_view
 from .models import Account
 from .serializers import AccountSerializer
 from .throttles import (ChangeAccountStatusThrottle,
@@ -23,6 +23,13 @@ from .permissions import (IsOwner,
 from .pagination import AccountPagination
 # Create your views here.
 
+@extend_schema_view(
+    list=extend_schema(
+        summary='List accounts',
+        description='Retrieve list of accounts with ordering, filtering, search',
+        tags=['Accounts'],
+    )
+)
 class AccountsViewSet(ModelViewSet):
     serializer_class = AccountSerializer
     permission_classes = [IsAuthenticated]
