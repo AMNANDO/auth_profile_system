@@ -44,7 +44,9 @@ class AccountsViewSet(ModelViewSet):
     ordering = ('-created_at',)
 
     def get_queryset(self):
-        return Account.objects.select_related('user').all()
+        if self.request.user.is_staff:
+            return Account.objects.all()
+        return Account.objects.select_related('user').filter(user=self.request.user)
 
     def get_permissions(self):
         if self.action == 'retrieve':
@@ -129,5 +131,5 @@ class AccountsViewSet(ModelViewSet):
         account.save()
         return Response({
             'success': True,
-            'message': 'Account has been activated.'
+            'data': 'Account has been activated.'
         }, status=status.HTTP_200_OK)
