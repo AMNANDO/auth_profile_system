@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     # third party
     "rest_framework",
     "django_filters",
+    "drf_spectacular",
 
     # local apps
     "apps.accounts",
@@ -151,6 +152,7 @@ REST_FRAMEWORK = {
         'hourly_anon': '20/hour',
         'change_account_status': '5/hour',
     },
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 CASHES = {
     'default': {
@@ -161,4 +163,26 @@ CASHES = {
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=20),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+}
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Accounts API',
+    'DESCRIPTION': 'API documentation for account management system',
+    'VERSION': '1.0.0',
+
+    'SERVE_INCLUDE_SCHEMA': False,
+
+    'COMPONENT_SPLIT_REQUEST': True,
+
+    'SECURITY':[
+        {
+            'BearerAuth': []
+        }
+    ],
+    'SECURITY_DEFINITIONS':{
+        'BearerAuth':{
+            'type':'http',
+            'scheme':'bearer',
+            'bearerFormat':'JWT',
+            }
+    }
 }
