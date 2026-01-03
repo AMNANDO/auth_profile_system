@@ -22,36 +22,40 @@ A Django REST Framework (DRF) project for managing user accounts with authentica
 1. Clone the repository:
 
 ```bash
+
 git clone https://github.com/AMNANDO/auth_profile_system.git
 cd auth_profile_system
+```
 
-
-Create a virtual environment and activate it:
+2. Create a virtual environment and activate it:
+```bash
 
 python -m venv venv
 source venv/bin/activate  # Linux/macOS
 venv\Scripts\activate     # Windows
+```
 
-
-Install dependencies:
+3. Install dependencies:
+```bash
 
 pip install -r requirements.txt
+```
 
-
-Apply migrations:
-
+4. Apply migrations:
+```bash
 python manage.py migrate
-
-
-Create a superuser:
+```
+5. Create a superuser:
+```bash
 
 python manage.py createsuperuser
+```
 
-
-Run the development server:
+6. Run the development server:
+```bash
 
 python manage.py runserver
-
+```
 API Endpoints
 
 Accounts
