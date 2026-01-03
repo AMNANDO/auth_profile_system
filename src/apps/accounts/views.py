@@ -38,7 +38,6 @@ class AccountsViewSet(ModelViewSet):
     filter_backends = (DjangoFilterBackend,
                        OrderingFilter,
                        SearchFilter)
-    throttle_scope = 'account'
     filterset_fields = ['is_active', 'age', 'email', 'user']
     ordering_fields = ['age', 'name', 'created_at']
     search_fields = ['name', 'email', 'bio']
@@ -49,11 +48,11 @@ class AccountsViewSet(ModelViewSet):
 
     def get_permissions(self):
         if self.action == 'retrieve':
-            permissions = [IsAuthenticated, IsAccountActive, IsOwner]
+            permissions = [IsAuthenticated, IsAccountActive, IsOwner | IsAdmin]
         elif self.action in ['update', 'partial_update', 'destroy']:
-            permissions = [IsAuthenticated, IsAccountActive, IsOwner]
+            permissions = [IsAuthenticated, IsAccountActive, IsOwner | IsAdmin]
         elif self.action in ['deactivate', 'activate']:
-            permissions = [IsAuthenticated, IsOwner]
+            permissions = [IsAuthenticated, IsOwner | IsAdmin]
         else :
             permissions = [IsAuthenticated]
         return [permission() for permission in permissions]
@@ -76,6 +75,12 @@ class AccountsViewSet(ModelViewSet):
             400: OpenApiResponse(
                 description='Account already inactive'
             ),
+            401: OpenApiResponse(
+                description='You are unauthorized to perform this action.'
+            ),
+            403: OpenApiResponse(
+                description='You dont have permission to perform this action.'
+            ),
             429: OpenApiResponse(
                 description='Too many requests'
             )
@@ -90,7 +95,7 @@ class AccountsViewSet(ModelViewSet):
             account.save()
             return Response({
                 'success': True,
-                'message': 'Account has been deactivated.'
+                'data': 'Account has been deactivated.'
             }, status=status.HTTP_200_OK)
         raise AlreadyInactiveAccountException()
 
@@ -102,6 +107,12 @@ class AccountsViewSet(ModelViewSet):
             ),
             400: OpenApiResponse(
                 description='Account already active'
+            ),
+            401: OpenApiResponse(
+                description='You are unauthorized to perform this action.'
+            ),
+            403: OpenApiResponse(
+                description='You dont have permission to perform this action.'
             ),
             429: OpenApiResponse(
                 description='Too many requests'
